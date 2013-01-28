@@ -1,37 +1,10 @@
 (setq user-full-name "Álvaro Peña")
 (setq user-mail-address "alvaropg@gmail.com")
 
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(c-basic-offset tab-width)
- '(case-fold-search t)
- '(column-number-mode t)
- '(css-indent-offset tab-width)
- '(current-language-environment "UTF-8")
- '(default-input-method "rfc1345")
- '(display-time-mode t)
- '(ede-project-directories (quote ("/home/alvaropg/work/git/almanah")))
- '(global-font-lock-mode t nil (font-lock))
- '(indent-tabs-mode nil)
- '(mumamo-submode-indent-offset tab-width)
- '(nxml-child-indent tab-width)
- '(org-agenda-files (quote ("~/Documents/Personales/GTD/gtd.org" "~/tmp/test.org")))
- '(php-manual-path "/usr/share/doc/php-doc/html/")
- '(safe-local-variable-values (quote ((indent-tabs-mode . s))))
- '(show-paren-mode t nil (paren))
- '(uniquify-buffer-name-style nil nil (uniquify)))
-
-(setq locale-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(prefer-coding-system       'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
-(setq x-select-buffer-file-coding-system 'utf-8)
+;; set up utf-8
+(prefer-coding-system         'utf-8)
+(setq coding-system-for-read  'utf-8)
+(setq coding-system-for-write 'utf-8)
 
 (define-key global-map [C-f1] 'eshell)
 (define-key global-map [f2] 'ido-find-file)                      ;; F2 - OPEN
@@ -54,20 +27,34 @@
 
 (color-theme-initialize)
 
-(require 'color-theme-subdued)
-(require 'color-theme-less)
+;;(require 'color-theme-subdued)
+;;(require 'color-theme-less)
 (require 'color-theme-gruber-darker)
-(require 'color-theme-tango)
-
+;;(require 'color-theme-tango)
+(color-theme-gruber-darker)
 ;;(color-theme-gtk-ide)
 ;;(color-theme-subdued)
-(color-theme-gruber-darker)
 
-(require 'php-mode)
+;; PHP
+;; (require 'php-mode) Not in 24
+(autoload 'php-mode "php-mode" "Major mode for editing php code." t) ;; For 24
+
 (add-to-list 'auto-mode-alist '("\\.module$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.install$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.engine$" . php-mode))
+
+;; PHPCS
+(defun my-php-hook-function ()
+  (set (make-local-variable 'compile-command) (format "phpcs --report=emacs --standard=PEAR %s" (buffer-file-name))))
+(add-hook 'php-mode-hook 'my-php-hook-function)
+
+;; PHP-DOC
+(setq php-manual-path "/usr/share/doc/php-doc/html")
+
+;; Completion
+(setq php-completion-file  "~/.emacs.d/php/php-completion-file")
+(define-key global-map [C-f2] 'php-complete-function)
 
 ;; Backups (This saved my life a bunch of times!)
 (setq make-backup-files t)
@@ -105,11 +92,19 @@
 
 ;; (add-hook 'c-mode-common-hook '(lambda () (local-set-key (kbd "RET") 'newline-and-indent)))
 
+(setq c-basic-offset 8)
 (setq default-tab-width 8)
 (setq tab-width 8)
 
 ;; Displays name of current function in modeline
 (which-function-mode)
+
+;; Scroll
+(setq
+ scroll-margin 5
+ scroll-conservatively 100000
+ scroll-preserve-screen-position t ;; Make pgup/dn remember current line
+ scroll-step 1) ;; Scroll line by line
 
 ;; Replace "yes or no" prompt with "y or n" prompt
 (defun yes-or-no-p (arg)
@@ -122,13 +117,18 @@
 ;; Make searches case insensitive
 (setq case-fold-search t)
 
+;;(standard-display-european +1)
+(set-input-mode (car (current-input-mode))
+                (nth 1 (current-input-mode))
+                0)
+
 ;; No sounds! visual beep for me please...
 (setq visible-bell t)
 
 ;; Always end a file with a newline
 (setq require-final-newline t)
 
-;; No toolbar for X (if Xemacs of course!)
+;; No toolbar
 (tool-bar-mode -1)
 
 ;; No scrollbar
@@ -146,8 +146,8 @@
 ;; Line number
 (global-linum-mode 1)
 
-;; PC Selection
-(pc-selection-mode 1)
+;; PC Selection (Not in 24)
+;;(pc-selection-mode 1)
 
 ;; disable welcome message
 (setq inhibit-startup-message t)
@@ -161,36 +161,14 @@
 (require 'font-lock) 
 (global-font-lock-mode t)
 
-;; Mousewheel
-(defun sd-mousewheel-scroll-up (event)
-  "Scroll window under mouse up by five lines."
-  (interactive "e")
-  (let ((current-window (selected-window)))
-    (unwind-protect
-        (progn 
-          (select-window (posn-window (event-start event)))
-          (scroll-up 5))
-      (select-window current-window))))
-(defun sd-mousewheel-scroll-down (event)
-  "Scroll window under mouse down by five lines."
-  (interactive "e")
-  (let ((current-window (selected-window)))
-    (unwind-protect
-        (progn 
-          (select-window (posn-window (event-start event)))
-          (scroll-down 5))
-      (select-window current-window))))
 
-;; Line number column
+;; Bookmarks
+(setq
+ bookmark-default-file "~/.emacs.d/bookmarks"
+ bookmark-save-flag 1)
 
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil background "#fff" :foreground "#000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 80 :width normal :foundry "unknown" :family "Droid Sans Mono")))))
 
-(put 'scroll-left 'disabled nil)
+(set-face-attribute 'default nil :font "Droid Sans Mono-8")
 
 ;; Edit remote files
 (require 'tramp)
@@ -204,3 +182,12 @@
   (interactive)
   (setq w (current-word))
   (start-process-shell-command "devhelp" nil "devhelp" "-s" w))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; ORG-MODE
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(custom-set-variables
+ '(org-agenda-files (quote ("~/Documents/Personales/GTD/gtd.org"))))
