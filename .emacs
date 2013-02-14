@@ -7,14 +7,14 @@
 (setq coding-system-for-write 'utf-8)
 
 (define-key global-map [C-f1] 'eshell)
-(define-key global-map [f2] 'ido-find-file)                      ;; F2 - OPEN
-(define-key global-map [f3] 'ido-kill-buffer)                    ;; F3 - CLOSE
-(define-key global-map [f5] 'goto-line)                          ;; F5 - GOTO LINE
-(define-key global-map [f7] 'ispell)                             ;; F7 - ISPELL
-(define-key global-map [f8] 'devhelp-word-at-point)              ;; F8 - DEVHELP
-(define-key global-map [f9] 'undo)                               ;; F9 - UNDO
-(define-key global-map [f10] 'compile)                           ;; F10 - COMPILE
-(define-key global-map [f11] 'next-error)                        ;; F11 - NEXT ERROR
+(define-key global-map [f2]   'ido-find-file)                      ;; F2 - OPEN
+(define-key global-map [f3]   'ido-kill-buffer)                    ;; F3 - CLOSE
+(define-key global-map [f5]   'goto-line)                          ;; F5 - GOTO LINE
+(define-key global-map [f7]   'ispell)                             ;; F7 - ISPELL
+(define-key global-map [f8]   'devhelp-word-at-point)              ;; F8 - DEVHELP
+(define-key global-map [f9]   'undo)                               ;; F9 - UNDO
+(define-key global-map [f10]  'compile)                            ;; F10 - COMPILE
+(define-key global-map [f11]  'next-error)                         ;; F11 - NEXT ERROR
 ;;(define-key global-map [f12] 'add-change-log-entry-other-window) ;; F12 - CHANGE
 
 ;; Keys for Org
@@ -22,6 +22,11 @@
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
+
+;; Key C-c o to switch .c/.h
+(add-hook 'c-mode-common-hook
+          (lambda()
+            (local-set-key  (kbd "C-c o") 'ff-find-other-file)))
 
 (add-to-list 'load-path "~/.lisp/")
 
@@ -87,8 +92,11 @@
                 ("\\.ui$". xml-mode))
               auto-mode-alist))
 
-
+;; No auto-indent
 (setq-default indent-tabs-mode nil)
+
+;; Highlight pairs of parentheses
+(show-paren-mode 1)
 
 ;; (add-hook 'c-mode-common-hook '(lambda () (local-set-key (kbd "RET") 'newline-and-indent)))
 
@@ -190,4 +198,4 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (custom-set-variables
- '(org-agenda-files (quote ("~/Documents/Personales/GTD/gtd.org"))))
+ '(org-agenda-files (quote ("~/Documents/Private/GTD/gtd.org"))))
