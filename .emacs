@@ -89,10 +89,11 @@
                 ("\\.inc$" . php-mode)
                 ("\\.php$" . php-mode)
                 ("\\.txt$" . text-mode)
+                ("\\.vala$" . vala-mode)
                 ("\\.ui$". xml-mode))
               auto-mode-alist))
 
-;; No auto-indent
+;; Use spaces instead of tabs
 (setq-default indent-tabs-mode nil)
 
 ;; Highlight pairs of parentheses
