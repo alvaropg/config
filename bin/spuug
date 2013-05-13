@@ -273,7 +273,7 @@ class GObjectBuilder
       "\t #{@gnamer.parent_classname} parent;\n" +
       "\t" + commentnl("insert public members, if any") + "\n" +
       "\t" + commentnl("private") +
-      "\t" + "#{@gnamer.classname}Private *_priv;\n" +
+      "\t" + "#{@gnamer.classname}Private *priv;\n" +
       "};\n\n" +
       
       # parent class
@@ -321,8 +321,8 @@ class GObjectBuilder
       commentnl("include other impl specific header files") + "\n" +
       
       commentnl("'private'/'protected' functions") +
-      "static void #{@gnamer.us_classname}_class_init (#{@gnamer.classname}Class *klass);\n" +
       "static void #{@gnamer.us_classname}_init       (#{@gnamer.classname} *obj);\n" +
+      "static void #{@gnamer.us_classname}_class_init (#{@gnamer.classname}Class *klass);\n" +
       "static void #{@gnamer.us_classname}_finalize   (GObject *obj);\n\n" + 
       
       commentnl("list my signals ") +
@@ -334,13 +334,10 @@ class GObjectBuilder
       "struct _#{@private_struct} {\n" +
       "\t" + commentnl("my private members go here, e.g.") +
       "\t" + commentnl("gboolean _frobnicate_mode;") +
-      "};\n" +
-      align2(get_private_func_def, "(G_TYPE_INSTANCE_GET_PRIVATE((o), \\",
-             get_private_func_def.length + 4) + "\n" +
-      align2("", " #{@type_macro}, \\",
-             get_private_func_def.length + 4) + "\n" +
-      align2("", " #{@private_struct}))",
-             get_private_func_def.length + 4) + "\n" +
+      "};\n\n" +
+
+      get_private_func_def + " (G_TYPE_INSTANCE_GET_PRIVATE((o), #{@type_macro}, #{@private_struct}))" + "\n\n" +
+
       commentnl("globals") +
       "static #{@gnamer.parent_classname}Class *parent_class = NULL;\n\n" +
       commentnl("uncomment the following if you have defined any signals") + 
@@ -348,11 +345,17 @@ class GObjectBuilder
       
       "G_DEFINE_TYPE (#{@gnamer.classname}, #{@gnamer.us_classname}, " +
                       "#{@gnamer.parent_type_macro});\n\n" +
+      
+      "static void\n#{@gnamer.us_classname}_init (#{@gnamer.classname} *obj)\n" +
+      "{\n" +
+      "\tobj->priv = #{get_private_func}(obj);\n\n" +
+      commentnl("to init any of the private data, do e.g:") + 
+      commentnl("\tobj->priv->_frobnicate_mode = FALSE;") +
+      "}\n\n" +
 
       "static void\n#{@gnamer.us_classname}_class_init (#{@gnamer.classname}Class *klass)\n" +
       "{\n" +
-      "\tGObjectClass *gobject_class;\n" +
-      "\tgobject_class = (GObjectClass*) klass;\n\n" +
+      "\tGObjectClass *gobject_class = G_OBJECT_CLASS (klass);\n\n" +
       "\tparent_class            = g_type_class_peek_parent (klass);\n" +
       "\tgobject_class->finalize = #{@gnamer.us_classname}_finalize;\n\n" +
       "\tg_type_class_add_private (gobject_class, sizeof(#{@private_struct}));\n\n" +
@@ -363,31 +366,24 @@ class GObjectBuilder
       commentnl("\t\tg_signal_new (\"my_signal_2\",....);") +
       commentnl("\tetc.") +
       "}\n\n" +
-      
-      "static void\n#{@gnamer.us_classname}_init (#{@gnamer.classname} *obj)\n" +
-      "{\n" +
-      "\tobj->_priv = #{get_private_func}(obj);\n\n" +
-      commentnl("to init any of the private data, do e.g:") + 
-      commentnl("\tobj->_priv->_frobnicate_mode = FALSE;") +
-      "}\n\n" +
-      
+
       "static void\n#{@gnamer.us_classname}_finalize (GObject *obj)\n" +
       "{\n" +
       commentnl("\tfree/unref instance resources here") +
       "\tG_OBJECT_CLASS(parent_class)->finalize (obj);\n" +
       "}\n\n" +
-      
-      if (@gnamer.namespace =~ /Gtk|Gnome|Egg|Hildon/ or 
+
+      if (@gnamer.namespace =~ /Gtk|Gnome|Egg|Hildon/ or
           @gnamer.parent_classname =~ /Gtk|Gnome|Egg|Hildon/)
       then "GtkWidget*" else "#{@gnamer.classname}*" end +
-      
+
       "\n#{@gnamer.us_classname}_new (void)\n" +
       "{\n" +
-      "\treturn " + 
+      "\treturn " +
       if (@gnamer.namespace =~ /Gtk|Gnome|Egg|Hildon/ or 
           @gnamer.parent_classname =~ /Gtk|Gnome|Egg|Hildon/)
-      then "GTK_WIDGET" else "#{@cast_macro}" end +
-      "(g_object_new(#{@type_macro}, NULL));\n" +
+      then "GTK_WIDGET" else "#{@cast_macro}" end + " " +
+      "(g_object_new (#{@type_macro}, NULL));\n" +
       "}\n\n" +
       commentnl("following: other function implementations") +
       commentnl("such as #{@gnamer.us_classname}_do_something, or " +

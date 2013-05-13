@@ -41,9 +41,10 @@
 ;;(color-theme-subdued)
 
 ;; PHP
-;; (require 'php-mode) Not in 24
-(autoload 'php-mode "php-mode" "Major mode for editing php code." t) ;; For 24
+(require 'php-mode)
+;;(autoload 'php-mode "php-mode" "Major mode for editing php code." t) ;; For 24
 
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.module$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.install$" . php-mode))
@@ -192,11 +193,7 @@
   (setq w (current-word))
   (start-process-shell-command "devhelp" nil "devhelp" "-s" w))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
 ;; ORG-MODE
-;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (custom-set-variables
  '(org-agenda-files (quote ("~/Documents/Private/GTD/gtd.org"))))
