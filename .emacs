@@ -40,6 +40,12 @@
 ;;(color-theme-gtk-ide)
 ;;(color-theme-subdued)
 
+;; Full ack
+(autoload 'ack-same "full-ack" nil t)
+(autoload 'ack "full-ack" nil t)
+(autoload 'ack-find-same-file "full-ack" nil t)
+(autoload 'ack-find-file "full-ack" nil t)
+
 ;; PHP
 (require 'php-mode)
 ;;(autoload 'php-mode "php-mode" "Major mode for editing php code." t) ;; For 24
