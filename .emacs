@@ -30,6 +30,9 @@
 
 (add-to-list 'load-path "~/.lisp/")
 
+;;
+;; Color theme
+;;
 (color-theme-initialize)
 
 ;;(require 'color-theme-subdued)
@@ -46,6 +49,43 @@
 (autoload 'ack-find-same-file "full-ack" nil t)
 (autoload 'ack-find-file "full-ack" nil t)
 
+;;
+;; Python
+;;
+(require 'python)
+
+(add-to-list 'auto-mode-alist '("\\.spy$" . python-mode))
+
+;; auto-complete with jedi
+(add-hook 'python-mode-hook 'auto-complete-mode)
+(add-hook 'python-mode-hook 'jedi:ac-setup)
+
+;; syntax checking on-the-fly
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; Debug & PDB breakpoint
+(defun python--add-debug-highlight ()
+  "Adds a highlighter for use by `python--pdb-breakpoint-string'"
+  (highlight-lines-matching-regexp "## DEBUG ##\\s-*$" 'hi-red-b))
+
+(add-hook 'python-mode-hook 'python--add-debug-highlight)
+
+(defvar python--pdb-breakpoint-string "import pdb; pdb.set_trace() ## DEBUG ##"
+  "Python breakpoint string used by `python-insert-breakpoint'")
+
+(defun python-insert-breakpoint ()
+  "Inserts a python breakpoint using `pdb'"
+  (interactive)
+  (back-to-indentation)
+  ;; this preserves the correct indentation in case the line above
+  ;; point is a nested block
+  (split-line)
+  (insert python--pdb-breakpoint-string))
+
+;; Python debug
+(define-key python-mode-map (kbd "<f6>") 'python-insert-breakpoint)
+
+;;
 ;; PHP
 (require 'php-mode)
 ;;(autoload 'php-mode "php-mode" "Major mode for editing php code." t) ;; For 24
@@ -203,3 +243,40 @@
 
 (custom-set-variables
  '(org-agenda-files (quote ("~/Documents/Private/GTD/gtd.org"))))
+
+;; Packages
+(require 'package)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+
+;; el-get
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
+      (goto-char (point-max))
+      (eval-print-last-sexp))))
+(el-get 'sync)
+
+;; ELPA Archive for gtk-look
+;; http://user42.tuxfamily.org/gtk-look/index.html
+(eval-after-load "package"
+  '(add-to-list 'package-archives
+    '("user42" . "http://download.tuxfamily.org/user42/elpa/packages/")))
+
+;; Speedbar
+(require 'speedbar)
+
+;; Speedbar font
+(make-face 'speedbar-face)
+(set-face-font 'speedbar-face "Droid Sans Mono-8")
+(setq speedbar-mode-hook '(lambda () (buffer-face-set 'speedbar-face)))
+
+;; Use the w3m text browser for urls
+(setq browse-url-browser-function 'w3m-browse-url)
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+;; optional keyboard short-cut
+(global-set-key "\C-xm" 'browse-url-at-point)

@@ -73,6 +73,7 @@ by John Gruber."
      (region ((t (:background "#484848"))))
      (secondary-selection ((t (:background "#484951" :foreground "#F4F4FF"))))
      (tooltip ((t (:background "#52494e" :foreground "#fff"))))
+     (which-func ((t (:foreground "#cc8c3c"))))
 
      ;; Parenthesis matching
      (show-paren-match-face ((t (:background "#52494e" :foreground "#f4f4ff"))))
