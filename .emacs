@@ -87,8 +87,8 @@
 
 ;;
 ;; PHP
-(require 'php-mode)
-;;(autoload 'php-mode "php-mode" "Major mode for editing php code." t) ;; For 24
+;;(require 'php-mode)
+(autoload 'php-mode "php-mode" "Major mode for editing php code." t) ;; For 24
 
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.module$" . php-mode))
@@ -224,7 +224,7 @@
  bookmark-save-flag 1)
 
 
-(set-face-attribute 'default nil :font "Droid Sans Mono-8")
+(set-face-attribute 'default nil :font "Droid Sans Mono-10")
 
 ;; Edit remote files
 (require 'tramp)
@@ -240,7 +240,6 @@
   (start-process-shell-command "devhelp" nil "devhelp" "-s" w))
 
 ;; ORG-MODE
-
 (custom-set-variables
  '(org-agenda-files (quote ("~/Documents/Private/GTD/gtd.org"))))
 
@@ -266,6 +265,17 @@
 (eval-after-load "package"
   '(add-to-list 'package-archives
     '("user42" . "http://download.tuxfamily.org/user42/elpa/packages/")))
+
+;; Sync my packages
+(package-initialize)
+;; check if the packages is installed; if not, install it.
+(mapc
+ (lambda (package)
+   (or (package-installed-p package)
+       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
+           (package-install package))))
+;; this list results from C-h v package-activated-list
+ '(color-theme-solarized color-theme flycheck cl-lib f flymake flymake-python-pyflakes flymake-easy google-this google-translate gtk-look icicles pkg-info dash s w3m))
 
 ;; Speedbar
 (require 'speedbar)
