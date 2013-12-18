@@ -87,6 +87,8 @@
 
 ;;
 ;; PHP
+;;
+
 ;;(require 'php-mode)
 (autoload 'php-mode "php-mode" "Major mode for editing php code." t) ;; For 24
 
@@ -108,7 +110,9 @@
 (setq php-completion-file  "~/.emacs.d/php/php-completion-file")
 (define-key global-map [C-f2] 'php-complete-function)
 
+;;
 ;; Backups (This saved my life a bunch of times!)
+;;
 (setq make-backup-files t)
 (setq backup-by-copying t) ; Don't clobber symlinks
 (setq backup-directory-alist '(("." . "~/.emacs.backups"))) ; Don't litter my fs tree
