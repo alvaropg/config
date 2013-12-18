@@ -279,7 +279,7 @@
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
 ;; this list results from C-h v package-activated-list
- '(color-theme-solarized color-theme flycheck cl-lib f flymake flymake-python-pyflakes flymake-easy google-this google-translate gtk-look icicles pkg-info dash s w3m))
+ '(color-theme-solarized color-theme flycheck f flymake flymake-python-pyflakes flymake-easy google-this google-translate gtk-look icicles magit-svn magit git-rebase-mode git-commit-mode cl-lib pkg-info dash rainbow-mode s w3m zenburn-theme))
 
 ;; Speedbar
 (require 'speedbar)
