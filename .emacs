@@ -227,8 +227,10 @@
  bookmark-default-file "~/.emacs.d/bookmarks"
  bookmark-save-flag 1)
 
-
-(set-face-attribute 'default nil :font "Droid Sans Mono-10")
+;; Fonts
+(set-face-attribute 'default nil :font "Droid Sans Mono-8")
+;; Font for emacs-client
+(setq default-frame-alist '((font . "Droid Sans Mono-8")))
 
 ;; Edit remote files
 (require 'tramp)
