@@ -10,6 +10,7 @@
 (define-key global-map [f2]   'ido-find-file)                      ;; F2 - OPEN
 (define-key global-map [f3]   'ido-kill-buffer)                    ;; F3 - CLOSE
 (define-key global-map [f5]   'goto-line)                          ;; F5 - GOTO LINE
+;; (define-key global-map [f6]   '?)                             ;; F6 - Reserved for debug
 (define-key global-map [f7]   'ispell)                             ;; F7 - ISPELL
 (define-key global-map [f8]   'devhelp-word-at-point)              ;; F8 - DEVHELP
 (define-key global-map [f9]   'undo)                               ;; F9 - UNDO
@@ -48,6 +49,11 @@
 (autoload 'ack "full-ack" nil t)
 (autoload 'ack-find-same-file "full-ack" nil t)
 (autoload 'ack-find-file "full-ack" nil t)
+
+
+
+;; syntax checking on-the-fly
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;;
 ;; Python
@@ -249,6 +255,10 @@
 (custom-set-variables
  '(org-agenda-files (quote ("~/Documents/Private/GTD/gtd.org"))))
 
+;; Interactively do things
+;(require 'ido)
+;(ido-mode t)
+
 ;; Packages
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -281,7 +291,7 @@
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
 ;; this list results from C-h v package-activated-list
- '(ack color-theme-solarized color-theme flycheck f flymake flymake-python-pyflakes flymake-easy google-this google-translate gtk-look icicles magit-svn magit git-rebase-mode git-commit-mode pkg-info epl cl-lib dash rainbow-mode s w3m yasnippet zenburn-theme))
+ '(ack auto-complete-c-headers auto-complete auto-complete-clang-async color-theme-solarized color-theme evil-nerd-commenter flycheck f flymake flymake-python-pyflakes flymake-easy gh google-this google-translate gtk-look icicles java-snippets logito magit-svn magit git-rebase-mode git-commit-mode pcache pkg-info epl dash popup cl-lib rainbow-mode s w3m yasnippet zenburn-theme))
 
 ;; Speedbar
 (require 'speedbar)
@@ -290,6 +300,33 @@
 (make-face 'speedbar-face)
 (set-face-font 'speedbar-face "Droid Sans Mono-8")
 (setq speedbar-mode-hook '(lambda () (buffer-face-set 'speedbar-face)))
+
+;; Speedbar without separate frame
+(defconst my-speedbar-buffer-name " SPEEDBAR")
+
+(defun my-speedbar-no-separate-frame ()
+  (interactive)
+  (when (not (buffer-live-p speedbar-buffer))
+    (setq speedbar-buffer (get-buffer-create my-speedbar-buffer-name)
+          speedbar-frame (selected-frame)
+          dframe-attached-frame (selected-frame)
+          speedbar-select-frame-method 'attached
+          speedbar-verbosity-level 0
+          speedbar-last-selected-file nil)
+    (set-buffer speedbar-buffer)
+    (speedbar-mode)
+    (speedbar-reconfigure-keymaps)
+    (speedbar-update-contents)
+    (speedbar-set-timer 1)
+    (make-local-hook 'kill-buffer-hook)
+    (add-hook 'kill-buffer-hook
+              (lambda () (when (eq (current-buffer) speedbar-buffer)
+                           (setq speedbar-frame nil
+                                 dframe-attached-frame nil
+                                 speedbar-buffer nil)
+                           (speedbar-set-timer nil)))))
+  (set-window-buffer (selected-window) 
+                     (get-buffer my-speedbar-buffer-name)))
 
 ;; Use the w3m text browser for urls
 (setq browse-url-browser-function 'w3m-browse-url)
@@ -303,3 +340,25 @@
 ;; Yasnippet
 (require 'yasnippet) ;; not yasnippet-bundle
 (yas-global-mode 1)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; Auto Complete
+;; (require 'auto-complete-config)
+;; (setq ac-auto-start nil)
+;; (defun my-ac-config ()
+;;   (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
+;;   (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
+;;   (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
+;;   (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
+;;   (add-hook 'css-mode-hook 'ac-css-mode-setup)
+;;   (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+;;   (global-auto-complete-mode t))
+;; (my-ac-config)
+
+;; Evil Nerd Commenter https://github.com/redguardtoo/evil-nerd-commenter
+(evilnc-default-hotkeys)
