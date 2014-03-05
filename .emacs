@@ -66,9 +66,6 @@
 (add-hook 'python-mode-hook 'auto-complete-mode)
 (add-hook 'python-mode-hook 'jedi:ac-setup)
 
-;; syntax checking on-the-fly
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
 ;; Debug & PDB breakpoint
 (defun python--add-debug-highlight ()
   "Adds a highlighter for use by `python--pdb-breakpoint-string'"
@@ -215,6 +212,10 @@
 ;; PC Selection (Not in 24)
 ;;(pc-selection-mode 1)
 
+;; Overwrite selected region
+(delete-selection-mode t)
+(setq transient-mark-mode t)
+
 ;; disable welcome message
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
@@ -291,7 +292,7 @@
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
 ;; this list results from C-h v package-activated-list
- '(ack auto-complete-c-headers auto-complete auto-complete-clang-async color-theme-solarized color-theme evil-nerd-commenter flycheck f flymake flymake-python-pyflakes flymake-easy gh google-this google-translate gtk-look icicles java-snippets logito magit-svn magit git-rebase-mode git-commit-mode pcache pkg-info epl dash popup cl-lib rainbow-mode s w3m yasnippet zenburn-theme))
+ '(ack auto-complete-c-headers auto-complete auto-complete-clang-async color-theme-solarized color-theme evil-nerd-commenter expand-region flycheck f flymake flymake-gjshint flymake-python-pyflakes flymake-easy gh google-this google-translate gtk-look icicles java-snippets logito magit-svn magit git-rebase-mode git-commit-mode multiple-cursors pcache pkg-info epl dash popup cl-lib rainbow-mode s w3m yasnippet zenburn-theme))
 
 ;; Speedbar
 (require 'speedbar)
@@ -348,17 +349,25 @@
  )
 
 ;; Auto Complete
-;; (require 'auto-complete-config)
-;; (setq ac-auto-start nil)
-;; (defun my-ac-config ()
-;;   (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
-;;   (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
-;;   (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
-;;   (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
-;;   (add-hook 'css-mode-hook 'ac-css-mode-setup)
-;;   (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-;;   (global-auto-complete-mode t))
-;; (my-ac-config)
+(require 'auto-complete-config)
+(setq ac-auto-start 1)
+(defun my-ac-config ()
+  (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
+  (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
+  (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
+  (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
+  (add-hook 'css-mode-hook 'ac-css-mode-setup)
+  (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+  (global-auto-complete-mode t))
+(my-ac-config)
 
 ;; Evil Nerd Commenter https://github.com/redguardtoo/evil-nerd-commenter
 (evilnc-default-hotkeys)
+
+;; Multiple Cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+
+;; Schematic unit selection
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
