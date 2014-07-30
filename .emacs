@@ -292,7 +292,7 @@
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
 ;; this list results from C-h v package-activated-list
- '(ack auto-complete-c-headers auto-complete auto-complete-clang-async color-theme-solarized color-theme evil-nerd-commenter expand-region flycheck f flymake flymake-gjshint flymake-python-pyflakes flymake-easy gh google-this google-translate gtk-look icicles java-snippets logito magit-svn magit git-rebase-mode git-commit-mode multiple-cursors pcache pkg-info epl dash popup cl-lib rainbow-mode s w3m yasnippet zenburn-theme))
+ '(full-ack auto-complete auto-complete-c-headers evil-nerd-commenter expand-region flycheck f gh google-this google-translate gtk-look icicles java-snippets logito magit-svn magit git-rebase-mode git-commit-mode multiple-cursors pcache pkg-info epl dash popup cl-lib rainbow-mode s w3m yasnippet))
 
 ;; Speedbar
 (require 'speedbar)
