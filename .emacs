@@ -235,9 +235,10 @@
  bookmark-save-flag 1)
 
 ;; Fonts
-(set-face-attribute 'default nil :font "Droid Sans Mono-8")
+(setq-default line-spacing 1)
+(set-face-attribute 'default nil :font "Liberation Mono-8")
 ;; Font for emacs-client
-(setq default-frame-alist '((font . "Droid Sans Mono-8")))
+(setq default-frame-alist '((font . "Liberation Mono-8")))
 
 ;; Edit remote files
 (require 'tramp)
