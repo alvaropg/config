@@ -88,6 +88,15 @@
 ;; Python debug
 (define-key python-mode-map (kbd "<f6>") 'python-insert-breakpoint)
 
+;; Python lookup symbol (requires a the info data, from the package python-info f.e.)
+(require 'info-look)
+
+(info-lookup-add-help
+ :mode 'python-mode
+ :regexp "[[:alnum:]_]+"
+ :doc-spec
+ '(("(python)Index" nil "")))
+
 ;;
 ;; PHP
 ;;
