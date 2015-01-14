@@ -167,6 +167,8 @@
 (setq c-basic-offset 8)
 (setq default-tab-width 8)
 (setq tab-width 8)
+;; Disabling electic indent on RET
+(setq electric-indent-chars (remq ?\n electric-indent-chars))
 
 ;; Displays name of current function in modeline
 (which-function-mode)
