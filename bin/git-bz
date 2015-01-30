@@ -1664,7 +1664,7 @@ Subject: %s
 """ % (name, email, patch.date, patch.description)
             # The exact string 'FIXME: need commit message' is checked for by
             # git.gnome.org commit hooks, so they need to be updated if it changes.
-            patch.data = headers + """
+            patch.data = headers.encode('UTF-8') + """
 
 FIXME: need commit message.
 (Please also double check the author and subject.)
