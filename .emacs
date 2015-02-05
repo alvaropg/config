@@ -274,6 +274,8 @@
 
 ;; Packages
 (require 'package)
+;; circumvent a possible bug: http://stackoverflow.com/questions/26108655/error-updating-emacs-packages-failed-to-download-gnu-archive
+(setq package-check-signature nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
