@@ -35,25 +35,8 @@
 ;; Color theme
 ;;
 (color-theme-initialize)
-
-;;(require 'color-theme-subdued)
-;;(require 'color-theme-less)
 (require 'color-theme-gruber-darker)
-;;(require 'color-theme-tango)
 (color-theme-gruber-darker)
-;;(color-theme-gtk-ide)
-;;(color-theme-subdued)
-
-;; Full ack
-(autoload 'ack-same "full-ack" nil t)
-(autoload 'ack "full-ack" nil t)
-(autoload 'ack-find-same-file "full-ack" nil t)
-(autoload 'ack-find-file "full-ack" nil t)
-
-
-
-;; syntax checking on-the-fly
-(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;;
 ;; Python
@@ -306,7 +289,51 @@
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
 ;; this list results from C-h v package-activated-list
- '(full-ack auto-complete auto-complete-c-headers evil-nerd-commenter expand-region flycheck f gh google-this google-translate gtk-look icicles java-snippets logito magit-svn magit git-rebase-mode git-commit-mode multiple-cursors pcache pkg-info epl dash popup cl-lib rainbow-mode s w3m yasnippet))
+ '(popup
+   cl-loop-aplist
+   evil-nerd-commenter
+   expand-region
+   f
+   dash
+   s
+   flycheck
+   pkg-info
+   epl
+   dash
+   full-ack
+   gh
+   logito
+   pcache
+   git-timemachine
+   google-this
+   google-translate
+   gtk-look
+   icicles
+   java-snippets
+   yasnippet
+   jedi
+   epc
+   ctable
+   concurrent
+   deferred
+   let-alist
+   magit-filenotify
+   magit
+   git-rebase-mode
+   git-commit-mode
+   magit-svn
+   multiple-cursors
+   pcache
+   pkg-info
+   epl
+   python-environment
+   deferred
+   python-info
+   rainbow-mode
+   w3m
+   yasnippet
+   auto-complete
+   auto-complete-c-headers))
 
 ;; Speedbar
 (require 'speedbar)
@@ -386,3 +413,27 @@
 ;; Schematic unit selection
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
+
+;; Full ack
+(autoload 'ack-same "full-ack" nil t)
+(autoload 'ack "full-ack" nil t)
+(autoload 'ack-find-same-file "full-ack" nil t)
+(autoload 'ack-find-file "full-ack" nil t)
+
+;; syntax checking on-the-fly
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; GTK-Doc
+(add-hook 'c-mode-common-hook (lambda () (load "gtk-doc")))
+
+;; Markdown mode
+(autoload 'markdown-mode "markdown-mode"
+  "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
+;; Git gutter: https://github.com/syohex/emacs-git-gutter
+(require 'git-gutter)
+(global-git-gutter-mode t)
+(git-gutter:linum-setup)
+(global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
