@@ -333,14 +333,17 @@
    w3m
    yasnippet
    auto-complete
-   auto-complete-c-headers))
+   auto-complete-c-headers
+   fringe-helper
+   git-gutter
+   markdown-mode))
 
 ;; Speedbar
 (require 'speedbar)
 
 ;; Speedbar font
 (make-face 'speedbar-face)
-(set-face-font 'speedbar-face "Droid Sans Mono-8")
+(set-face-font 'speedbar-face "Liberation Mono-8")
 (setq speedbar-mode-hook '(lambda () (buffer-face-set 'speedbar-face)))
 
 ;; Speedbar without separate frame
