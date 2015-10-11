@@ -289,9 +289,7 @@
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
 ;; this list results from C-h v package-activated-list
- '(popup
-   cl-loop-aplist
-   evil-nerd-commenter
+ '(evil-nerd-commenter
    expand-region
    f
    dash
