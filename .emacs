@@ -1,6 +1,16 @@
 (setq user-full-name "Álvaro Peña")
 (setq user-mail-address "alvaropg@gmail.com")
 
+;; Proxy
+;; (setq url-http-proxy-basic-auth-storage
+;;    (list (list "proxy.com:8080"
+;;                (cons "Input your LDAP UID !"
+;;                      (base64-encode-string "EMEA\\USER:PASSWORD.")))))
+;; (setq url-proxy-services
+;;     '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+;;       ("http" . "135.245.192.7:8000")
+;;       ("https" . "135.245.192.7:8000")))
+
 ;; set up utf-8
 (prefer-coding-system         'utf-8)
 (setq coding-system-for-read  'utf-8)
