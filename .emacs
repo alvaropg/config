@@ -291,9 +291,7 @@
 ;; this list results from C-h v package-activated-list
  '(evil-nerd-commenter
    expand-region
-   f
    dash
-   s
    flycheck
    pkg-info
    epl
@@ -317,8 +315,6 @@
    let-alist
    magit-filenotify
    magit
-   git-rebase-mode
-   git-commit-mode
    magit-svn
    multiple-cursors
    pcache
