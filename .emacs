@@ -444,3 +444,10 @@
 (global-git-gutter-mode t)
 (git-gutter:linum-setup)
 (global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
+
+;; Slipt vertical
+(setq split-height-threshold 1)
+(setq split-width-threshold nil)
+
+(provide '.emacs)
+;;; .emacs ends here
