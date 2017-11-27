@@ -1,0 +1,59 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use Env;
+
+my @dirs = ();
+my $help = 0;
+
+GetOptions("help|?" => \$help) or pod2usage(2);
+pod2usage(-exitval => 0, -verbose => 2) if $help;
+
+die "findinsharedlibs must have a function to search for" if (@ARGV < 1);
+@dirs = split(/:/,$ENV{'LD_LIBRARY_PATH'}) if defined($ENV{'LD_LIBRARY_PATH'});
+
+foreach my $line (`ldconfig -v 2> /dev/null`) {
+  push @dirs,(split /:/, $line)[0] if ($line =~ /^\//);
+}
+
+foreach my $thisDir (@dirs) { # iterate through LD_LIBRARY_PATH & ld.conf
+  chdir $thisDir;
+  foreach my $file (glob("*.a *.so")) {
+    my @list = grep(/$ARGV[0]/,`nm --defined-only -g $file 2> /dev/null`);
+    print $thisDir . "/" . $file,"\n" if (@list > 0);
+  }
+}
+
+__END__
+
+=head1 NAME
+
+findinsharedlibs - find a routine in the list of possible shared libraries
+
+=head1 SYNOPSIS
+
+findinsharedlibs name_of_routine_to_find
+
+=head1 DESCRIPTION
+
+This short perl script that finds the library where the specified library
+is defined. I have hit this case multiple times, trying to port a piece
+of Linux code where a specific routine comes up as unresolved and I have
+to grep through all the standard library locations, /lib, /usr/lib, etc.
+looking for some library that defines that routine. I have not found a
+general Linux command to let me do this. This routine searches all the
+library pathes defined by ld.conf and LD_LIBRARY_PATH if defined.
+
+For example, I want to know where where the sysfs_ functions are defined.
+This was the specific case that caused me to write this:
+
+edt @ centosi.ed-thompson.org ! /home/edt $ findinsharedlibs sysfs_
+/usr/lib/libdmraid.a
+/usr/lib/libibverbs.a
+/usr/lib/liblvm2cmd.a
+/usr/lib/libsysfs.a
+
+=cut
+
