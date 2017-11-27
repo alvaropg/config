@@ -240,9 +240,13 @@
 
 ;; Fonts
 (setq-default line-spacing 1)
-(set-face-attribute 'default nil :font "Liberation Mono-8")
+;; (set-face-attribute 'default nil :font "Liberation Mono-8")
+;; (set-face-attribute 'default nil :font "M+ 1m-10")
+(set-face-attribute 'default nil :font "Hack-10")
 ;; Font for emacs-client
-(setq default-frame-alist '((font . "Liberation Mono-8")))
+;; (setq default-frame-alist '((font . "Liberation Mono-8")))
+;; (setq default-frame-alist '((font . "M+ 1m-10")))
+(setq default-frame-alist '((font . "Hack-10")))
 
 ;; Edit remote files
 (require 'tramp)
