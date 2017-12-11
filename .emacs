@@ -42,13 +42,6 @@
 (add-to-list 'load-path "~/.lisp/")
 
 ;;
-;; Color theme
-;;
-(color-theme-initialize)
-(require 'color-theme-gruber-darker)
-(color-theme-gruber-darker)
-
-;;
 ;; Python
 ;;
 (require 'python)
@@ -452,6 +445,22 @@
 ;; Slipt vertical
 (setq split-height-threshold 1)
 (setq split-width-threshold nil)
+
+;;
+;; Color theme
+;;
+(color-theme-initialize)
+
+;; (require 'color-theme-gruber-darker)
+;; (color-theme-gruber-darker)
+
+;; (load-theme 'seti t)
+;; (set-default 'cursor-type 'box)
+
+;; (require 'kaolin-themes)
+;; (load-theme 'kaolin-dark)
+
+(load-theme 'afternoon t)
 
 (provide '.emacs)
 ;;; .emacs ends here
