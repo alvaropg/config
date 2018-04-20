@@ -15,3 +15,6 @@ git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Crese
 
 # "git up" for a pull with rebase
 git config --global alias.up "pull --rebase"
+
+# "git st" as status
+git config --global alias.st "status"
