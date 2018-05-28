@@ -1,3 +1,6 @@
+;;; package --- Summary
+;;; Commentary: My own emacs config, based in https://nilsdeppe.com/posts/emacs-c++-ide2
+;;; Code:
 (setq user-full-name "Álvaro Peña")
 (setq user-mail-address "alvaropg@gmail.com")
 
@@ -216,7 +219,7 @@
 ;; disable welcome message
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
-(setq initial-scratch-message nil) 
+(setq initial-scratch-message nil)
 
 ;; White spaces
 (require 'whitespace)
@@ -253,10 +256,6 @@
   (interactive)
   (setq w (current-word))
   (start-process-shell-command "devhelp" nil "devhelp" "-s" w))
-
-;; ORG-MODE
-(custom-set-variables
- '(org-agenda-files (quote ("~/Documents/Private/GTD/gtd.org"))))
 
 ;; Interactively do things
 ;(require 'ido)
@@ -311,7 +310,6 @@
    google-this
    google-translate
    gtk-look
-   icicles
    java-snippets
    yasnippet
    jedi
@@ -332,9 +330,8 @@
    python-info
    rainbow-mode
    w3m
-   yasnippet
-   auto-complete
-   auto-complete-c-headers
+   ;; auto-complete
+   ;; auto-complete-c-headers
    fringe-helper
    git-gutter
    markdown-mode))
@@ -386,16 +383,10 @@
 ;; Yasnippet
 (require 'yasnippet) ;; not yasnippet-bundle
 (yas-global-mode 1)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 
 ;; Auto Complete
-(require 'auto-complete-config)
-(ac-config-default)
+;; (require 'auto-complete-config)
+;; (ac-config-default)
 ;; (setq ac-auto-start 1)
 ;; (defun my-ac-config ()
 ;;   (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
@@ -443,24 +434,61 @@
 (global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
 
 ;; Slipt vertical
-(setq split-height-threshold 1)
-(setq split-width-threshold nil)
+(setq split-height-threshold nil)
+(setq split-width-threshold 1)
 
 ;;
 ;; Color theme
 ;;
-(color-theme-initialize)
 
-;; (require 'color-theme-gruber-darker)
-;; (color-theme-gruber-darker)
+;; Hack to load the theme in emacs client
+;; http://stackoverflow.com/q/18904529/5030424
 
-;; (load-theme 'seti t)
-;; (set-default 'cursor-type 'box)
+;; Prefered themes:
+;; color-theme-gruber-darker
+;; seti
+;; kaolin-themes
+;; afternoon
+;; majapahit-dark
 
-;; (require 'kaolin-themes)
-;; (load-theme 'kaolin-dark)
+(defvar my:theme 'afternoon)
+(defvar my:theme-window-loaded nil)
+(defvar my:theme-terminal-loaded nil)
 
-(load-theme 'afternoon t)
+(if (daemonp)
+    (add-hook 'after-make-frame-functions(lambda (frame)
+                                           (select-frame frame)
+                                           (if (window-system frame)
+                                               (unless my:theme-window-loaded
+                                                 (if my:theme-terminal-loaded
+                                                     (enable-theme my:theme)
+                                                   (load-theme my:theme t))
+                                                 (setq my:theme-window-loaded t))
+                                             (unless my:theme-terminal-loaded
+                                               (if my:theme-window-loaded
+                                                   (enable-theme my:theme)
+                                                 (load-theme my:theme t))
+                                               (setq my:theme-terminal-loaded t)))))
+
+  (progn
+    (load-theme my:theme t)
+    (if (display-graphic-p)
+        (setq my:theme-window-loaded t)
+      (setq my:theme-terminal-loaded t))))
+
+;; Avoiding Dead keys
+;; https://www.emacswiki.org/emacs/DeadKeys
+(require 'iso-transl)
+
+;; Ivy, swiper & counsel
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+(global-set-key "\C-s" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
 (provide '.emacs)
-;;; .emacs ends here
+;;; .emacs ends
