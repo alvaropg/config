@@ -52,8 +52,8 @@
 (add-to-list 'auto-mode-alist '("\\.spy$" . python-mode))
 
 ;; auto-complete with jedi
-(add-hook 'python-mode-hook 'auto-complete-mode)
-(add-hook 'python-mode-hook 'jedi:ac-setup)
+;; (add-hook 'python-mode-hook 'auto-complete-mode)
+;; (add-hook 'python-mode-hook 'jedi:ac-setup)
 
 ;; Debug & PDB breakpoint
 (defun python--add-debug-highlight ()
@@ -108,8 +108,8 @@
 (setq php-manual-path "/usr/share/doc/php-doc/html")
 
 ;; Completion
-(setq php-completion-file  "~/.emacs.d/php/php-completion-file")
-(define-key global-map [C-f2] 'php-complete-function)
+;; (setq php-completion-file  "~/.emacs.d/php/php-completion-file")
+;; (define-key global-map [C-f2] 'php-complete-function)
 
 ;;
 ;; Backups (This saved my life a bunch of times!)
@@ -124,7 +124,8 @@
 
 ;; Filetypes & modes
 (setq auto-mode-alist
-      (append '(("\\.C$" . c-mode)
+      (append '(
+                ("\\.C$" . c-mode)
                 ("\\.cc$" . c++-mode)
                 ("\\.cpp$" . c++-mode)
                 ("\\.cxx$" . c++-mode)
@@ -142,7 +143,8 @@
                 ("\\.php$" . php-mode)
                 ("\\.txt$" . text-mode)
                 ("\\.vala$" . vala-mode)
-                ("\\.ui$". xml-mode))
+                ("\\.ui$". xml-mode)
+                )
               auto-mode-alist))
 
 ;; Use spaces instead of tabs
@@ -195,7 +197,7 @@
 (tool-bar-mode -1)
 
 ;; No scrollbar
-(set-scroll-bar-mode nil)
+(set-scroll-bar-mode -1)
 
 ; Hide menu bar
 (menu-bar-mode -1)
@@ -248,7 +250,7 @@
 (require 'tramp)
 
 ;; A better cscope script
-(require 'ascope)
+;(require 'ascope)
 
 ;; Devhelp
 (defun devhelp-word-at-point ()
@@ -343,21 +345,101 @@
 
 ;; Yasnippet
 (require 'yasnippet) ;; not yasnippet-bundle
-(yas-global-mode 1)
+;; (yas-global-mode 1)
+(yas-reload-all)
+(add-hook 'prog-mode-hook #'yas-minor-mode)
 
-;; Auto Complete
-;; (require 'auto-complete-config)
-;; (ac-config-default)
-;; (setq ac-auto-start 1)
-;; (defun my-ac-config ()
-;;   (setq-default ac-sources '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
-;;   (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
-;;   (add-hook 'c-mode-common-hook 'ac-cc-mode-setup)
-;;   (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
-;;   (add-hook 'css-mode-hook 'ac-css-mode-setup)
-;;   (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-;;   (global-auto-complete-mode t))
-;; (my-ac-config)
+;; Use universal ctags to build the tags database for the project.
+;; When you first want to build a TAGS database run 'touch TAGS'
+;; in the root directory of your project.
+(use-package counsel-etags
+  :ensure t
+  :init
+  (eval-when-compile
+    ;; Silence missing function warnings
+    (declare-function counsel-etags-virtual-update-tags "counsel-etags.el")
+    (declare-function counsel-etags-guess-program "counsel-etags.el")
+    (declare-function counsel-etags-locate-tags-file "counsel-etags.el"))
+  :bind (
+         ("M-." . counsel-etags-find-tag-at-point)
+         ("M-t" . counsel-etags-grep-symbol-at-point)
+         ("M-s" . counsel-etags-find-tag))
+  :config
+  ;; Ignore files above 800kb
+  (setq counsel-etags-max-file-size 800)
+  ;; Ignore build directories for tagging
+  (add-to-list 'counsel-etags-ignore-directories '"build*")
+  (add-to-list 'counsel-etags-ignore-directories '".vscode")
+  (add-to-list 'counsel-etags-ignore-filenames '".clang-format")
+  ;; Don't ask before rereading the TAGS files if they have changed
+  (setq tags-revert-without-query t)
+  ;; Don't warn when TAGS files are large
+  (setq large-file-warning-threshold nil)
+  ;; How many seconds to wait before rerunning tags for auto-update
+  (setq counsel-etags-update-interval 180)
+  ;; Set up auto-update
+  ;; (add-hook
+  ;;  'prog-mode-hook
+  ;;  (lambda () (add-hook 'after-save-hook
+  ;;                       (lambda ()
+  ;;                         (counsel-etags-virtual-update-tags))))
+  ;;  )
+
+  ;; The function provided by counsel-etags is broken (at least on Linux)
+  ;; and doesn't correctly exclude directories, leading to an excessive
+  ;; amount of incorrect tags. The issue seems to be that the trailing '/'
+  ;; in e.g. '*dirname/*' causes 'find' to not correctly exclude all files
+  ;; in that directory, only files in sub-directories of the dir set to be
+  ;; ignore.
+  (defun my-scan-dir (src-dir &optional force)
+    "Create tags file from SRC-DIR. \
+     If FORCE is t, the commmand is executed without \
+     checking the timer."
+    (let* ((find-pg (or
+                     counsel-etags-find-program
+                     (counsel-etags-guess-program "find")))
+           (ctags-pg (or
+                      counsel-etags-tags-program
+                      (format "%s -e -L" (counsel-etags-guess-program
+                                          "ctags"))))
+           (default-directory src-dir)
+           ;; run find&ctags to create TAGS
+           (cmd (format
+                 "%s . \\( %s \\) -prune -o -type f -not -size +%sk %s | %s -"
+                 find-pg
+                 (mapconcat
+                  (lambda (p)
+                    (format "-iwholename \"*%s*\"" p))
+                  counsel-etags-ignore-directories " -or ")
+                 counsel-etags-max-file-size
+                 (mapconcat (lambda (n)
+                              (format "-not -name \"%s\"" n))
+                            counsel-etags-ignore-filenames " ")
+                 ctags-pg))
+           (tags-file (concat (file-name-as-directory src-dir) "TAGS"))
+           (doit (or force (not (file-exists-p tags-file)))))
+      ;; always update cli options
+      (when doit
+        (message "%s at %s" cmd default-directory)
+        (shell-command cmd)
+        (visit-tags-table tags-file t)
+        )
+      )
+    )
+
+  (setq counsel-etags-update-tags-backend
+        (lambda ()
+          (interactive)
+          (let* ((tags-file (counsel-etags-locate-tags-file)))
+            (when tags-file
+              (my-scan-dir (file-name-directory tags-file) t)
+              (run-hook-with-args
+               'counsel-etags-after-update-tags-hook tags-file)
+              (unless counsel-etags-quiet-when-updating-tags
+                (message "%s is updated!" tags-file))))
+          )
+        )
+  )
 
 ;; Evil Nerd Commenter https://github.com/redguardtoo/evil-nerd-commenter
 (evilnc-default-hotkeys)
@@ -380,7 +462,7 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; GTK-Doc
-(add-hook 'c-mode-common-hook (lambda () (load "gtk-doc")))
+;; (add-hook 'c-mode-common-hook (lambda () (load "gtk-doc")))
 
 ;; Markdown mode
 (autoload 'markdown-mode "markdown-mode"
@@ -389,10 +471,10 @@
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;; Git gutter: https://github.com/syohex/emacs-git-gutter
-(require 'git-gutter)
-(global-git-gutter-mode t)
-(git-gutter:linum-setup)
-(global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
+;; (require 'git-gutter)
+;; (global-git-gutter-mode t)
+;; (git-gutter:linum-setup)
+;; (global-set-key (kbd "C-x C-g") 'git-gutter:toggle)
 
 ;; Slipt vertical
 (setq split-height-threshold nil)
@@ -411,8 +493,9 @@
 ;; kaolin-themes
 ;; afternoon
 ;; majapahit-dark
+;; dracula
 
-(defvar my:theme 'afternoon)
+(defvar my:theme 'dracula)
 (defvar my:theme-window-loaded nil)
 (defvar my:theme-terminal-loaded nil)
 
@@ -450,6 +533,9 @@
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
+;; Tags (Universal CTags + counsel-etags)
+(require 'counsel-etags)
 
 ;; Use universal ctags to build the tags database for the project.
 ;; When you first want to build a TAGS database run 'touch TAGS'
@@ -551,7 +637,8 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (counsel-etags counsel yasnippet-snippets w3m swiper rainbow-mode python-info multiple-cursors markdown-mode magit-svn magit-filenotify jedi java-snippets icicles gtk-look google-translate google-this git-timemachine git-gutter gh full-ack fringe-helper flycheck f expand-region evil-nerd-commenter cl-loop-aplist afternoon-theme))))
+    (flycheck-gradle gradle-mode magit-todos dracula-theme ycmd counsel-etags git-gutter magit-filenotify swiper yasnippet-snippets xml-rpc w3m rainbow-mode python-info multiple-cursors modern-cpp-font-lock markdown-mode majapahit-theme magit-svn jira jedi java-snippets gtk-look google-translate google-this git-timemachine gh full-ack fringe-helper flycheck expand-region evil-nerd-commenter counsel company-ycmd color-theme afternoon-theme)))
+ '(safe-local-variable-values (quote ((flycheck-clang-definitions . "USE_OPENMAX")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
