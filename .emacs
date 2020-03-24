@@ -297,7 +297,7 @@
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
 ;; this list results from C-h v package-activated-list
- '(counsel-etags counsel yasnippet-snippets w3m swiper rainbow-mode python-info multiple-cursors markdown-mode magit-svn magit-filenotify jedi java-snippets icicles gtk-look google-translate google-this git-timemachine git-gutter gh full-ack fringe-helper flycheck f expand-region evil-nerd-commenter cl-loop-aplist afternoon-theme))
+ '(use-package counsel-etags counsel yasnippet-snippets w3m swiper rainbow-mode python-info multiple-cursors markdown-mode dracula-theme magit-svn magit-filenotify jedi java-snippets gtk-look google-translate google-this git-timemachine git-gutter gh full-ack fringe-helper flycheck f expand-region evil-nerd-commenter cl-loop-aplist afternoon-theme))
 
 ;; Speedbar
 (require 'speedbar)
