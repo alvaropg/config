@@ -14,10 +14,10 @@ if not os.path.isfile(diary_db):
     diary_db = diary_db + '.encrypted'
     if not os.path.isfile(diary_db):
         sys.exit("Almanah database not found")
-print "Almanah database founded on " + diary_db
+print("Almanah database founded on " + diary_db)
 
 backup_diary_db = os.path.join(os.environ['HOME'], os.path.basename(diary_db) + "." + datetime.date.today().strftime("%d%m%Y"))
-print "Almanah database backup: " + backup_diary_db
+print("Almanah database backup: " + backup_diary_db)
 
 shutil.copy(diary_db, backup_diary_db)
 
