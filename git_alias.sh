@@ -5,9 +5,6 @@ git config --global user.name "Álvaro Peña"
 git config --global user.email alvaropg@gmail.com
 git config --global user.signingkey D1913058541CA1EF
 
-# GNOME
-git config --global url.ssh://alvaropg@git.gnome.org/git/.insteadof gnome:
-
 # git color everywhere
 git config --global color.ui auto
 
