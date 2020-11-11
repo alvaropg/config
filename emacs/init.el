@@ -79,6 +79,8 @@
   :config (global-set-key (kbd "C-x g") 'magit-status))
 
 
+(use-package meson-mode)
+
 ;; Org-mode
 
 ;; Replace the content marker, “⋯”, with a nice unicode arrow.
