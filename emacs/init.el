@@ -121,6 +121,14 @@
   :config
   (nyan-mode 1))
 
+
+;; YAML
+(use-package yaml-mode
+  :ensure t
+  :mode (("\\.yml\\'" . yaml-mode)
+	 ("\\.bst\\'" . yaml-mode))
+  )
+
 ;; Backups
 (setq make-backup-files t)
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups"))) ;; New location for backups.
