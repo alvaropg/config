@@ -85,6 +85,8 @@
   :config (global-set-key (kbd "C-x g") 'magit-status))
 
 
+(use-package git-timemachine)
+
 (use-package meson-mode)
 
 ;; Org-mode
