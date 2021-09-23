@@ -15,7 +15,7 @@
  '(initial-scratch-message nil)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(nyan-mode dracula-theme magit auto-package-update use-package))
+   '(yaml-mode nyan-mode dracula-theme magit auto-package-update use-package))
  '(require-final-newline t)
  '(scroll-bar-mode nil)
  '(scroll-conservatively 100000)
