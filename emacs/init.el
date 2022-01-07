@@ -88,19 +88,19 @@
   (setq lsp-keymap-prefix "C-c l")
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
          (c-mode . lsp)
+	 (c++-mode . lsp)
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode
-  :after lsp-mode
-  :config
-  (lsp-ui-flycheck-enable . t)
-  )
+;; (use-package lsp-ui :commands lsp-ui-mode :after lsp-mode)
 ;; Because I'm an ivy user
 (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
+
+;; Autocompletion
+(use-package company
+  :ensure t
+  :hook (prog-mode . company-mode))
 
 ;; Magit
 (use-package magit
