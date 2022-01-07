@@ -59,6 +59,8 @@
   )
 
 
+(use-package evil-nerd-commenter)
+
 (use-package yasnippet
   :ensure t
   :init
@@ -74,10 +76,30 @@
 (use-package flycheck
   :ensure t
   :init
-  (add-hook 'python-mode-hook 'flycheck-mode)
-  (add-hook 'c-mode-hook 'flycheck-mode)
-  (add-hook 'c++-mode-hook 'flycheck-mode)
+  ;; (add-hook 'python-mode-hook 'flycheck-mode)
+  ;; (add-hook 'c-mode-hook 'flycheck-mode)
+  ;; (add-hook 'c++-mode-hook 'flycheck-mode)
   )
+
+
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (c-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode
+  :after lsp-mode
+  :config
+  (lsp-ui-flycheck-enable . t)
+  )
+;; Because I'm an ivy user
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
 
 ;; Magit
