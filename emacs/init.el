@@ -82,6 +82,9 @@
   )
 
 
+;; Don't use formatter
+;; (setq lsp-enable-on-type-formatting nil)
+;; (setq lsp-enable-indentation nil)
 (use-package lsp-mode
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
@@ -127,13 +130,16 @@
 
 
 ;; Pretty colors
-(set-face-attribute 'default nil  :font "Hack-12")
+(set-face-attribute 'default nil  :font "Hack-10")
 
 ;; Treat all themes as safe; no query before use
 (setf custom-safe-themes t)
 
 (use-package dracula-theme
   :config (load-theme 'dracula t))
+(use-package solarized-theme)
+;;   :config (load-theme 'solarized-light t))
+(use-package spacemacs-theme)
 
 ;; Nyan cat instead of scrollbar
 ;; scroll-bar-mode is turned off in custom.el
@@ -165,7 +171,7 @@
   "runs devhelp"
   (interactive)
   (setq w (current-word))
-  (start-process-shell-command "devhelp" nil "devhelp" "-s" w))
+  (start-process-shell-command "devhelp" nil "devhelp" "-s"))
 
 ;; Shortcuts
 (global-set-key [f3]  'ido-kill-buffer)
