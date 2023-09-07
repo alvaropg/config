@@ -15,7 +15,7 @@
  '(initial-scratch-message nil)
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(spacemacs-theme solarized-theme yaml-mode nyan-mode dracula-theme magit auto-package-update use-package))
+   '(meson-mode git-timemachine diff-hl company lsp-ivy lsp-mode flycheck yasnippet-snippets yasnippet evil-nerd-commenter multiple-cursors counsel swiper spacemacs-theme solarized-theme yaml-mode nyan-mode dracula-theme magit auto-package-update use-package))
  '(require-final-newline t)
  '(scroll-bar-mode nil)
  '(scroll-conservatively 100000)
