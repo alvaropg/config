@@ -156,7 +156,7 @@
 
 
 ;; Pretty colors
-(set-face-attribute 'default nil  :font "Hack-10")
+(set-face-attribute 'default nil  :font "Hack Nerd Font-10")
 
 ;; Treat all themes as safe; no query before use
 (setf custom-safe-themes t)
