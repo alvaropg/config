@@ -12,7 +12,7 @@
 ;; https://git.savannah.gnu.org/cgit/emacs.git/tree/etc/NEWS.29#n1714
 (setq package-install-upgrade-built-in t)
 ;; https://github.com/magit/magit/issues/5011
-(require 'seq-25)
+;;(require 'seq-25)
 
 (setq package-archives
       '(("org"     .       "https://orgmode.org/elpa/")
